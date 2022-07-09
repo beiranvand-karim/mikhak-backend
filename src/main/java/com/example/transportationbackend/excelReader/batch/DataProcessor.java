@@ -87,13 +87,24 @@ public class DataProcessor implements ItemProcessor<LightPostInput, LightPost> {
     }
 
     private void setCoordinates(PathEntity path, String firstP, String secondP) {
-        String[] firstPoints = firstP.trim().split(",");
-        path.setLatitude_1(parseDouble(firstPoints[0]));
-        path.setLongitude_1(parseDouble(firstPoints[1]));
-
-        String[] secondPoints = secondP.trim().split(",");
-        path.setLatitude_2(parseDouble(secondPoints[0]));
-        path.setLongitude_2(parseDouble(secondPoints[1]));
+        try {
+            String[] firstPoints = firstP.trim().split(",");
+            path.setLatitude_1(parseDouble(firstPoints[0]));
+            path.setLongitude_1(parseDouble(firstPoints[1]));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            path.setLatitude_1(0);
+            path.setLongitude_1(0);
+        }
+        try {
+            String[] secondPoints = secondP.trim().split(",");
+            path.setLatitude_2(parseDouble(secondPoints[0]));
+            path.setLongitude_2(parseDouble(secondPoints[1]));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            path.setLatitude_2(0);
+            path.setLongitude_2(0);
+        }
     }
 
 }

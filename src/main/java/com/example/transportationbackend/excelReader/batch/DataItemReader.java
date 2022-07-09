@@ -1,7 +1,7 @@
 package com.example.transportationbackend.excelReader.batch;
 
+import com.example.transportationbackend.excelReader.batch.rowMapper.DataExcelRowMapper;
 import com.example.transportationbackend.excelReader.models.LightPostInput;
-import com.example.transportationbackend.excelReader.models.PathInputModel;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.excel.RowMapper;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
