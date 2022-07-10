@@ -1,7 +1,10 @@
 package com.example.transportationbackend.excelReader.batch;
 
+import com.example.transportationbackend.TransportationBackendApplication;
 import com.example.transportationbackend.excelReader.batch.rowMapper.DataExcelRowMapper;
 import com.example.transportationbackend.excelReader.models.LightPostInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.excel.RowMapper;
 import org.springframework.batch.item.excel.poi.PoiItemReader;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Component;
 public class DataItemReader extends PoiItemReader<LightPostInput> {
 
     private String filePath;
+
+    private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
+    private final String marker = "Data Item Reader";
 
     public DataItemReader(){
         setRowMapper(excelRowMapper());
@@ -29,7 +35,7 @@ public class DataItemReader extends PoiItemReader<LightPostInput> {
                 this.setLinesToSkip(1);
             }
             catch (Exception e){
-                e.printStackTrace();
+                logger.error(marker,e.getMessage());
             }
         }
     }

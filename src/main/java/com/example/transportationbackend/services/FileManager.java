@@ -1,5 +1,8 @@
 package com.example.transportationbackend.services;
 
+import com.example.transportationbackend.TransportationBackendApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +19,9 @@ public class FileManager {
     private File dataFile;
     private File uploadDirectory;
 
+    private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
+    private final String marker = "File Manager";
+
     public FileManager() {
         handleUploadDirectory();
     }
@@ -26,7 +32,7 @@ public class FileManager {
         try {
             rootDir = new File(this.getClass().getResource("/").toURI());
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            logger.error(marker,e.getMessage());
         }
         this.uploadDirectory = new File(rootDir.getAbsolutePath() + "/uploads");
 
