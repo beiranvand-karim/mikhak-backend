@@ -1,10 +1,13 @@
 package com.example.transportationbackend.controller;
 
+import com.example.transportationbackend.TransportationBackendApplication;
 import com.example.transportationbackend.models.LightPost;
 import com.example.transportationbackend.models.PathEntity;
 import com.example.transportationbackend.repositories.LightPostRepository;
 import com.example.transportationbackend.repositories.PathRepository;
 import com.example.transportationbackend.services.FileManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -22,6 +25,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/transportation")
 public class Controller {
+
+    private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
+    private final String marker = "Controller";
 
     @Autowired
     private PathRepository pathRepository;
@@ -69,7 +75,7 @@ public class Controller {
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException
                 | JobParametersInvalidException e) {
-            e.printStackTrace();
+            logger.error(marker,e.getMessage());
         }
     }
 }
