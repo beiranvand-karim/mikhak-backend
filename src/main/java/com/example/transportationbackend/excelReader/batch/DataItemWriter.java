@@ -1,9 +1,9 @@
 package com.example.transportationbackend.excelReader.batch;
 
 import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.PathEntity;
+import com.example.transportationbackend.models.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.PathRepository;
+import com.example.transportationbackend.repositories.CurrentRoadRepository;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,12 +12,12 @@ import java.util.List;
 public class DataItemWriter implements ItemWriter<LightPost> {
 
     @Autowired
-    private PathRepository pathRepository;
+    private CurrentRoadRepository currentRoadRepository;
 
     @Autowired
     private LightPostRepository lpRepository;
 
-    private PathEntity savedPath;
+    private RegisteredRoad savedRoad;
 
     @Override
     public void write(List<? extends LightPost> lpLists) throws Exception {
@@ -25,25 +25,24 @@ public class DataItemWriter implements ItemWriter<LightPost> {
 
             if (!isLightPostExists(lp.getLightPostId())) {
 
-                Double pathId = lp.getPath().getPathId();
-                if (isPathExists(pathId)) {
-                    savedPath = pathRepository.findByPathId(pathId);
+                Double pathId = lp.getRegisteredRoad().getRoadId();
+                if (isRoadRegistered(pathId)) {
+                    savedRoad = currentRoadRepository.findRegisteredRoadsByRoadId(pathId);
                 } else {
-                    savedPath = lp.getPath();
-                    pathRepository.save(savedPath);
+                    savedRoad = lp.getRegisteredRoad();
+                    currentRoadRepository.save(savedRoad);
                 }
-                lp.setPath(savedPath);
+                lp.setRegisteredRoad(savedRoad);
                 lpRepository.save(lp);
             }
         }
     }
 
-
     public boolean isLightPostExists(Double id) {
         return lpRepository.existsByLightPostId(id);
     }
 
-    public boolean isPathExists(Double id) {
-        return pathRepository.existsByPathId(id);
+    public boolean isRoadRegistered(Double id) {
+        return currentRoadRepository.existsRegisteredRoadByRoadId(id);
     }
 }

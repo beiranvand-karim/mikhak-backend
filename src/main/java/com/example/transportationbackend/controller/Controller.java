@@ -2,9 +2,9 @@ package com.example.transportationbackend.controller;
 
 import com.example.transportationbackend.TransportationBackendApplication;
 import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.PathEntity;
+import com.example.transportationbackend.models.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.PathRepository;
+import com.example.transportationbackend.repositories.CurrentRoadRepository;
 import com.example.transportationbackend.services.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class Controller {
     private final String marker = "Controller";
 
     @Autowired
-    private PathRepository pathRepository;
+    private CurrentRoadRepository currentRoadRepository;
 
     @Autowired
     private LightPostRepository lpRepository;
@@ -45,9 +45,9 @@ public class Controller {
     @Autowired
     private FileManager fileManager;
 
-    @GetMapping("/paths")
-    public List<PathEntity> getPath() {
-        return pathRepository.findAll();
+    @GetMapping("/all_roads")
+    public List<RegisteredRoad> getRoads() {
+        return currentRoadRepository.findAll();
     }
 
     @GetMapping("/lightposts")

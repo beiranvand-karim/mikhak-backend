@@ -2,9 +2,9 @@ package com.example.transportationbackend.excelReader.batch.processor;
 
 import com.example.transportationbackend.TransportationBackendApplication;
 import com.example.transportationbackend.excelReader.models.LightPostInput;
-import com.example.transportationbackend.excelReader.models.PathInputModel;
+import com.example.transportationbackend.excelReader.models.RoadInputModel;
 import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.PathEntity;
+import com.example.transportationbackend.models.RegisteredRoad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -24,12 +24,11 @@ public class DataProcessor implements ItemProcessor<LightPostInput, LightPost> {
         if (lp == null || lp.equals(new LightPostInput()))
             return null;
 
-        PathEntity pathEntity = new PathEntity();
+        RegisteredRoad registeredRoad = new RegisteredRoad();
         List<LightPost> lpList = new ArrayList<>();
 
         LightPost lpEntity = new LightPost();
 
-        // lightpost setters
         try {
         LightPostSetters.setId(lpEntity,lp.getLightPostId());
         LightPostSetters.setHeight(lpEntity,lp.getHeight());
@@ -44,24 +43,21 @@ public class DataProcessor implements ItemProcessor<LightPostInput, LightPost> {
 
         lpList.add(lpEntity);
 
-
-        // path setters
         try {
-            PathInputModel path = lp.getPath();
-            PathEntitySetters.setPathId(pathEntity, path.getPathId());
-            PathEntitySetters.setFirstPoint(pathEntity, path.getFirstPoint());
-            PathEntitySetters.setSecondPoint(pathEntity, path.getSecondPoint());
-            PathEntitySetters.setPathWidth(pathEntity, path.getWidth());
-            PathEntitySetters.setDistanceEachLightPost(pathEntity, path.getDistanceEachLightPost());
-            PathEntitySetters.setCablePassType(pathEntity, path.getCablePass());
-            pathEntity.setLightPosts(lpList);
+            RoadInputModel path = lp.getRoadInputModel();
+            RoadSetters.setRoadIds(registeredRoad, path.getRoadId());
+            RoadSetters.setFirstPoint(registeredRoad, path.getFirstPoint());
+            RoadSetters.setSecondPoint(registeredRoad, path.getSecondPoint());
+            RoadSetters.setRoadWidth(registeredRoad, path.getWidth());
+            RoadSetters.setDistanceEachLightPost(registeredRoad, path.getDistanceEachLightPost());
+            RoadSetters.setCablePassType(registeredRoad, path.getCablePass());
+            registeredRoad.setLightPosts(lpList);
         }
         catch (Throwable t){
             logger.debug(marker);
             logger.debug("path setters", t.getMessage());
         }
-        LightPostSetters.setPath(lpEntity,pathEntity);
-
+        LightPostSetters.setRoad(lpEntity, registeredRoad);
         return lpEntity;
     }
 }

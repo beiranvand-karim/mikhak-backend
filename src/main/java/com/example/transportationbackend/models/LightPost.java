@@ -3,9 +3,13 @@ package com.example.transportationbackend.models;
 import com.example.transportationbackend.models.enums.LightPostSides;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "light_post_tb")
 public class LightPost {
@@ -34,7 +38,7 @@ public class LightPost {
 
     @ManyToOne
     @JoinColumn(name = "culomnId")
-    @JsonIncludeProperties(value = "pathId")
-    private PathEntity path;
+    @JsonIncludeProperties(value = "roadId")
+    private RegisteredRoad registeredRoad;
 
 }

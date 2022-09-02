@@ -9,5 +9,5 @@ public class LightPostInput {
     private String height;
     private String power;
     private String lightProductionType;
-    private PathInputModel path;
+    private RoadInputModel roadInputModel;
 }

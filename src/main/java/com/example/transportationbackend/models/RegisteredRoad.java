@@ -2,24 +2,26 @@ package com.example.transportationbackend.models;
 
 import com.example.transportationbackend.models.enums.CablePass;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 
 @Entity
+@Setter
+@Getter
 @Table(name = "paths_tb")
-@Data
-public class PathEntity {
+public class RegisteredRoad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long columnId;
-
-    @Column(name = "path_id",
+    @Column(name = "road_id",
             nullable = false,
             unique = true)
-    private Double pathId;
+    private Double roadId;
 
     @Column(name = "latitude_1")
     private double latitude_1;
@@ -43,6 +45,14 @@ public class PathEntity {
     @Enumerated(EnumType.STRING)
     private CablePass cablePass;
 
-    @OneToMany(mappedBy = "path")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "registration_time_stamp")
+    private Date registrationTimeStamp;
+
+    @OneToMany(mappedBy = "registeredRoad")
     private List<LightPost> lightPosts;
+
+    public RegisteredRoad() {
+        registrationTimeStamp = new Date();
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.transportationbackend.excelReader.batch.processor;
 
 import com.example.transportationbackend.TransportationBackendApplication;
-import com.example.transportationbackend.models.PathEntity;
+import com.example.transportationbackend.models.RegisteredRoad;
 import com.example.transportationbackend.models.enums.CablePass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,24 +10,24 @@ import java.util.Random;
 
 import static java.lang.Double.parseDouble;
 
-public class PathEntitySetters {
+public class RoadSetters {
 
     private static final String CablePassString = "bottom";
 
     private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private static final String marker = " Data Setter";
 
-    static void setPathId(PathEntity path , String pathId){
+    static void setRoadIds(RegisteredRoad road , String roadId){
         try{
-            path.setPathId(parseDouble(pathId));
+            road.setRoadId(parseDouble(roadId));
         }
         catch (Throwable t){
             logger.debug(marker,t.getMessage());
-            path.setPathId(new Random(500000).nextDouble());
+            road.setRoadId(new Random(500000).nextDouble());
         }
     }
 
-    static void setFirstPoint(PathEntity path, String firstP) {
+    static void setFirstPoint(RegisteredRoad path, String firstP) {
         try {
             String[] firstPoints = firstP.trim().split(",");
             path.setLatitude_1(parseDouble(firstPoints[0]));
@@ -40,7 +40,7 @@ public class PathEntitySetters {
         }
     }
 
-    static void setSecondPoint(PathEntity path, String secondP) {
+    static void setSecondPoint(RegisteredRoad path, String secondP) {
         try {
             String[] secondPoints = secondP.trim().split(",");
             path.setLatitude_2(parseDouble(secondPoints[0]));
@@ -53,7 +53,7 @@ public class PathEntitySetters {
         }
     }
 
-    static void setPathWidth(PathEntity path, String width) {
+    static void setRoadWidth(RegisteredRoad path, String width) {
         try {
             path.setWidth(parseDouble(width));
         } catch (Throwable t) {
@@ -63,7 +63,7 @@ public class PathEntitySetters {
         }
     }
 
-    static void setDistanceEachLightPost(PathEntity path, String distance) {
+    static void setDistanceEachLightPost(RegisteredRoad path, String distance) {
         try {
             path.setDistanceEachLightPost(parseDouble(distance));
         } catch (Throwable t) {
@@ -73,7 +73,7 @@ public class PathEntitySetters {
         }
     }
 
-    static void setCablePassType(PathEntity path, String cablePass){
+    static void setCablePassType(RegisteredRoad path, String cablePass){
         if (equalStrings(CablePassString, cablePass))
             path.setCablePass(CablePass.BOTTOM);
         else

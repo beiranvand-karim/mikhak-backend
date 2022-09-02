@@ -1,9 +1,8 @@
 package com.example.transportationbackend.excelReader.batch.processor;
 
 import com.example.transportationbackend.TransportationBackendApplication;
-import com.example.transportationbackend.excelReader.models.PathInputModel;
 import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.PathEntity;
+import com.example.transportationbackend.models.RegisteredRoad;
 import com.example.transportationbackend.models.enums.LightPostSides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +57,9 @@ public class LightPostSetters {
         }
     }
 
-    static void setPath(LightPost lp, PathEntity path){
+    static void setRoad(LightPost lp, RegisteredRoad path){
         try {
-            lp.setPath(path);
+            lp.setRegisteredRoad(path);
         }catch (Throwable t){
             logger.debug(marker,t.getMessage());
             logger.debug("path",t.getMessage());
