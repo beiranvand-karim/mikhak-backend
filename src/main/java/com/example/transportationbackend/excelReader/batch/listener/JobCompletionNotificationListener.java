@@ -13,30 +13,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobCompletionNotificationListener extends JobExecutionListenerSupport {
 
-  private static final Logger log = LoggerFactory.getLogger(JobCompletionNotificationListener.class);
+    private static final Logger log = LoggerFactory.getLogger(JobCompletionNotificationListener.class);
+    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private FileManager fileManager;
 
-  @Autowired
-  private FileManager fileManager;
-
-  private final JdbcTemplate jdbcTemplate;
-
-  @Autowired
-  public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-  }
-
-  @Override
-  public void afterJob(JobExecution jobExecution) {
-    if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
-      fileManager.deleteAll();
+    @Autowired
+    public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
-  }
 
-@Override
-public void beforeJob(JobExecution jobExecution) {
-	super.beforeJob(jobExecution);
-}
-  
-  
-  
+    @Override
+    public void afterJob(JobExecution jobExecution) {
+        if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+            fileManager.deleteAll();
+        }
+    }
+
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        super.beforeJob(jobExecution);
+    }
+
+
 }

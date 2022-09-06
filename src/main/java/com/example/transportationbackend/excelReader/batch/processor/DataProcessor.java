@@ -1,10 +1,14 @@
 package com.example.transportationbackend.excelReader.batch.processor;
 
 import com.example.transportationbackend.TransportationBackendApplication;
-import com.example.transportationbackend.excelReader.models.LightPostInput;
-import com.example.transportationbackend.excelReader.models.RoadInputModel;
-import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.RegisteredRoad;
+import com.example.transportationbackend.excelReader.models.EmptyRowModel;
+import com.example.transportationbackend.excelReader.models.ExcelRowModel;
+import com.example.transportationbackend.models.CustomPoint;
+import com.example.transportationbackend.models.enums.CablePass;
+import com.example.transportationbackend.models.enums.LightPostSides;
+import com.example.transportationbackend.models.lightpost.LightPost;
+import com.example.transportationbackend.models.road.EmptyRoad;
+import com.example.transportationbackend.models.road.RegisteredRoad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -14,50 +18,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DataProcessor implements ItemProcessor<LightPostInput, LightPost> {
+public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoad> {
 
     private final static Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private final String marker = "Data Processor";
+    List<LightPost> lpList = new ArrayList<>();
 
     @Override
-    public LightPost process(LightPostInput lp) throws Exception {
-        if (lp == null || lp.equals(new LightPostInput()))
+    public RegisteredRoad process(ExcelRowModel rowModel) throws Exception {
+        if (rowModel == null) {
+            lpList = new ArrayList<>();
             return null;
-
-        RegisteredRoad registeredRoad = new RegisteredRoad();
-        List<LightPost> lpList = new ArrayList<>();
-
-        LightPost lpEntity = new LightPost();
-
-        try {
-        LightPostSetters.setId(lpEntity,lp.getLightPostId());
-        LightPostSetters.setHeight(lpEntity,lp.getHeight());
-        LightPostSetters.setPower(lpEntity,lp.getPower());
-        LightPostSetters.setLightProductionType(lpEntity,lp.getLightProductionType());
-        LightPostSetters.setSides(lpEntity,lp.getSides());
-
-        } catch (Throwable t) {
-            logger.error(marker, t.getMessage());
-            t.printStackTrace();
+        } else if (rowModel.getClass() == EmptyRowModel.class) {
+            lpList = new ArrayList<>();
+            return new EmptyRoad();
         }
+        CablePass cablePass = CablePass.TOP;
+        CustomPoint firstP = new CustomPoint(0, 0),
+                secondP = new CustomPoint(0, 0);
+        double roadId = -1,
+                roadWidth = 0,
+                distanceLps = 0;
+        LightPostSides lpSides = LightPostSides.TWO_SIDES;
+        double lpId = 0,
+                lpHeight = 0,
+                lpPower = 0;
+        try {
+            roadId = DataProcessorHelper.parseIdToDouble(rowModel.getRoadId());
+            roadWidth = DataProcessorHelper.parseToDouble(rowModel.getWidth());
+            distanceLps = DataProcessorHelper.parseToDouble(rowModel.getDistanceEachLightPost());
+            firstP = DataProcessorHelper.extractPoint(rowModel.getFirstPoint());
+            secondP = DataProcessorHelper.extractPoint(rowModel.getSecondPoint());
+            cablePass = DataProcessorHelper.extractRoadCablePass(rowModel.getCablePass());
+            lpId = DataProcessorHelper.parseIdToDouble(rowModel.getLightPostId());
+            lpHeight = DataProcessorHelper.parseToDouble(rowModel.getHeight());
+            lpPower = DataProcessorHelper.parseToDouble(rowModel.getPower());
+            lpSides = DataProcessorHelper.extractLightPostSides(rowModel.getSides());
+        } catch (Exception e) {
+            logger.debug(marker, e);
+        }
+        ArrayList<CustomPoint> points = new ArrayList<>();
+        points.add(firstP);
+        points.add(secondP);
+        RegisteredRoad registeredRoad = RegisteredRoad
+                .builder()
+                .roadId(roadId)
+                .width(roadWidth)
+                .distanceEachLightPost(distanceLps)
+                .points(points)
+                .cablePass(cablePass)
+                .build();
 
+        LightPost lpEntity = LightPost
+                .builder()
+                .power(lpPower)
+                .height(lpHeight)
+                .lightPostId(lpId)
+                .lightProductionType(rowModel.getLightProductionType())
+                .sides(lpSides)
+                .build();
+        lpEntity.setRegisteredRoad(registeredRoad);
         lpList.add(lpEntity);
-
-        try {
-            RoadInputModel path = lp.getRoadInputModel();
-            RoadSetters.setRoadIds(registeredRoad, path.getRoadId());
-            RoadSetters.setFirstPoint(registeredRoad, path.getFirstPoint());
-            RoadSetters.setSecondPoint(registeredRoad, path.getSecondPoint());
-            RoadSetters.setRoadWidth(registeredRoad, path.getWidth());
-            RoadSetters.setDistanceEachLightPost(registeredRoad, path.getDistanceEachLightPost());
-            RoadSetters.setCablePassType(registeredRoad, path.getCablePass());
-            registeredRoad.setLightPosts(lpList);
-        }
-        catch (Throwable t){
-            logger.debug(marker);
-            logger.debug("path setters", t.getMessage());
-        }
-        LightPostSetters.setRoad(lpEntity, registeredRoad);
-        return lpEntity;
+        registeredRoad.setLightPosts(lpList);
+        return registeredRoad;
     }
 }

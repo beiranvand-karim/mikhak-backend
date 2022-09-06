@@ -1,10 +1,10 @@
 package com.example.transportationbackend.controller;
 
 import com.example.transportationbackend.TransportationBackendApplication;
-import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.RegisteredRoad;
+import com.example.transportationbackend.models.lightpost.LightPost;
+import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.CurrentRoadRepository;
+import com.example.transportationbackend.repositories.RoadRepository;
 import com.example.transportationbackend.services.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class Controller {
     private final String marker = "Controller";
 
     @Autowired
-    private CurrentRoadRepository currentRoadRepository;
+    private RoadRepository roadRepository;
 
     @Autowired
     private LightPostRepository lpRepository;
@@ -47,7 +47,7 @@ public class Controller {
 
     @GetMapping("/all_roads")
     public List<RegisteredRoad> getRoads() {
-        return currentRoadRepository.findAll();
+        return roadRepository.findAll();
     }
 
     @GetMapping("/lightposts")
@@ -75,7 +75,7 @@ public class Controller {
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException
                 | JobParametersInvalidException e) {
-            logger.error(marker,e.getMessage());
+            logger.error(marker, e.getMessage());
         }
     }
 }

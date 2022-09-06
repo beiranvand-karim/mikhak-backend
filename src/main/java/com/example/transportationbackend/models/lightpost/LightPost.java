@@ -1,26 +1,27 @@
-package com.example.transportationbackend.models;
+package com.example.transportationbackend.models.lightpost;
 
 import com.example.transportationbackend.models.enums.LightPostSides;
+import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.Date;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
-@NoArgsConstructor
 @Entity
-@Table(name = "light_post_tb")
+@Table(name = "lightpost_tb")
 public class LightPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long columnId;
 
-    @Column(name = "light_post_id",
-            nullable = false,
-            unique = true)
+    @Column(name = "light_post_id")
     private Double lightPostId;
 
     @Column(name = "sides")
@@ -36,9 +37,22 @@ public class LightPost {
     @Column(name = "light_production_type")
     private String lightProductionType;
 
-    @ManyToOne
-    @JoinColumn(name = "culomnId")
+    @Temporal(TemporalType.TIME)
+    @Column(name = "registeration_time")
+    private Date registrationTime;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "registeration_date")
+    private Date registrationDate;
+
+    @JoinColumn(name = "FK_road")
     @JsonIncludeProperties(value = "roadId")
+    @ManyToOne
     private RegisteredRoad registeredRoad;
 
+    @PrePersist
+    public void setDateTime() {
+        registrationTime = new Date();
+        registrationDate = new Date();
+    }
 }

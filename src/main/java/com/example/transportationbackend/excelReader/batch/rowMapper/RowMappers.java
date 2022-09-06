@@ -1,7 +1,6 @@
 package com.example.transportationbackend.excelReader.batch.rowMapper;
 
-import com.example.transportationbackend.excelReader.models.LightPostInput;
-import com.example.transportationbackend.excelReader.models.RoadInputModel;
+import com.example.transportationbackend.excelReader.models.ExcelRowModel;
 import org.springframework.batch.item.excel.support.rowset.RowSet;
 
 import java.util.Arrays;
@@ -19,16 +18,13 @@ public class RowMappers {
     private final String[] powerTitle = {"توان", "چراغ"};
     private final String[] heightTitle = {"ارتفاع", "چراغ"};
     private final String[] lightProductionTypeTitle = {"تولید", "نور"};
-
-    private LightPostInput lp;
-    private RoadInputModel roadInputModel;
+    private final ExcelRowModel rowModel;
 
     RowMappers() {
-        lp = new LightPostInput();
-        roadInputModel = new RoadInputModel();
+        rowModel = new ExcelRowModel();
     }
 
-    LightPostInput RowMapperByTitles(RowSet rowSet) throws Exception {
+    ExcelRowModel RowMapperByTitles(RowSet rowSet) throws Exception {
 
         for (int index = 0; index < rowSet.getMetaData().getColumnCount(); index++) {
 
@@ -36,57 +32,49 @@ public class RowMappers {
             String value = rowSet.getColumnValue(index);
 
             if (isTitleCorrect(title, roadIdTitle)) {
-                roadInputModel.setRoadId(value);
+                rowModel.setRoadId(value);
             } else if (isTitleCorrect(title, firstPointTitle)) {
-                roadInputModel.setFirstPoint(value);
+                rowModel.setFirstPoint(value);
             } else if (isTitleCorrect(title, secondPointTitle)) {
-                roadInputModel.setSecondPoint(value);
+                rowModel.setSecondPoint(value);
             } else if (isTitleCorrect(title, roadWidthTitle)) {
-                roadInputModel.setWidth(value);
+                rowModel.setWidth(value);
             } else if (isTitleCorrect(title, cablePassTitle)) {
-                roadInputModel.setCablePass(value);
+                rowModel.setCablePass(value);
             } else if (isTitleCorrect(title, distanceTitle)) {
-                roadInputModel.setDistanceEachLightPost(value);
+                rowModel.setDistanceEachLightPost(value);
             } else if (isTitleCorrect(title, lightpostIdTitle)) {
-                lp.setLightPostId(value);
+                rowModel.setLightPostId(value);
             } else if (isTitleCorrect(title, lightpostSidesTitle)) {
-                lp.setSides(value);
+                rowModel.setSides(value);
             } else if (isTitleCorrect(title, powerTitle)) {
-                lp.setPower(value);
+                rowModel.setPower(value);
             } else if (isTitleCorrect(title, heightTitle)) {
-                lp.setHeight(value);
+                rowModel.setHeight(value);
             } else if (isTitleCorrect(title, lightProductionTypeTitle)) {
-                lp.setLightProductionType(value);
+                rowModel.setLightProductionType(value);
             }
         }
-        lp.setRoadInputModel(roadInputModel);
-        return lp;
+        return rowModel;
     }
 
     private boolean isTitleCorrect(String columnTitle, String[] correctTitle) {
-        if (Arrays.stream(correctTitle).allMatch(columnTitle::contains)) {
-            return true;
-        }
-        return false;
+        return Arrays.stream(correctTitle).allMatch(columnTitle::contains);
     }
 
-    public LightPostInput defaultRowMapper(RowSet rowSet) throws Exception {
-
-        roadInputModel.setRoadId(rowSet.getColumnValue(0));
-        roadInputModel.setFirstPoint(rowSet.getColumnValue(1));
-        roadInputModel.setSecondPoint(rowSet.getColumnValue(2));
-        roadInputModel.setWidth(rowSet.getColumnValue(3));
-        roadInputModel.setCablePass(rowSet.getColumnValue(4));
-        roadInputModel.setDistanceEachLightPost(rowSet.getColumnValue(5));
-
-        lp.setLightPostId(rowSet.getColumnValue(6));
-        lp.setSides(rowSet.getColumnValue(7));
-        lp.setPower(rowSet.getColumnValue(8));
-        lp.setHeight(rowSet.getColumnValue(9));
-        lp.setLightProductionType(rowSet.getColumnValue(10));
-
-        lp.setRoadInputModel(roadInputModel);
-        return lp;
+    public ExcelRowModel defaultRowMapper(RowSet rowSet) throws Exception {
+        rowModel.setRoadId(rowSet.getColumnValue(0));
+        rowModel.setFirstPoint(rowSet.getColumnValue(1));
+        rowModel.setSecondPoint(rowSet.getColumnValue(2));
+        rowModel.setWidth(rowSet.getColumnValue(3));
+        rowModel.setCablePass(rowSet.getColumnValue(4));
+        rowModel.setDistanceEachLightPost(rowSet.getColumnValue(5));
+        rowModel.setLightPostId(rowSet.getColumnValue(6));
+        rowModel.setSides(rowSet.getColumnValue(7));
+        rowModel.setPower(rowSet.getColumnValue(8));
+        rowModel.setHeight(rowSet.getColumnValue(9));
+        rowModel.setLightProductionType(rowSet.getColumnValue(10));
+        return rowModel;
     }
 
 }

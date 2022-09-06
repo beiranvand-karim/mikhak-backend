@@ -1,48 +1,80 @@
 package com.example.transportationbackend.excelReader.batch;
 
-import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.RegisteredRoad;
+import com.example.transportationbackend.models.road.EmptyRoad;
+import com.example.transportationbackend.models.road.RegisteredRoad;
+import com.example.transportationbackend.repositories.ArchiveRepository;
 import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.CurrentRoadRepository;
+import com.example.transportationbackend.repositories.RoadRepository;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class DataItemWriter implements ItemWriter<LightPost> {
+public class DataItemWriter implements ItemWriter<RegisteredRoad> {
 
     @Autowired
-    private CurrentRoadRepository currentRoadRepository;
+    private RoadRepository roadRepository;
 
     @Autowired
     private LightPostRepository lpRepository;
 
-    private RegisteredRoad savedRoad;
+    @Autowired
+    private ArchiveRepository archiveRepository;
+
+    private RegisteredRoad savedRoadVersion;
 
     @Override
-    public void write(List<? extends LightPost> lpLists) throws Exception {
-        for (LightPost lp : lpLists) {
+    public void write(List<? extends RegisteredRoad> roads) throws Exception {
+        if (!roadRepository.findAll().isEmpty()) {
+            // TODO: 05.09.22 save current into archive
+        }
+        saveRoads(roads);
+    }
 
-            if (!isLightPostExists(lp.getLightPostId())) {
-
-                Double pathId = lp.getRegisteredRoad().getRoadId();
-                if (isRoadRegistered(pathId)) {
-                    savedRoad = currentRoadRepository.findRegisteredRoadsByRoadId(pathId);
-                } else {
-                    savedRoad = lp.getRegisteredRoad();
-                    currentRoadRepository.save(savedRoad);
+    private void saveRoads(List<? extends RegisteredRoad> roads) {
+        for (RegisteredRoad road : roads) {
+            if (road.getClass() != EmptyRoad.class) {
+                if (isRoadRegistered(road.getRoadId()))
+                    savedRoadVersion = roadRepository.findRoadsByRoadId(road.getRoadId());
+                else {
+                    savedRoadVersion = road;
+                    roadRepository.save(savedRoadVersion);
                 }
-                lp.setRegisteredRoad(savedRoad);
-                lpRepository.save(lp);
+                savedRoadVersion.getLightPosts().forEach(lightPost -> {
+                    if (isLightPostSaved(lightPost.getLightPostId()))
+                        moveCurrentRoadByIdInArchives(road.getRoadId());
+                    lightPost.setRegisteredRoad(savedRoadVersion);
+                    lpRepository.save(lightPost);
+                });
             }
         }
     }
 
-    public boolean isLightPostExists(Double id) {
+    private void saveCurrentInArchive() {
+        try {
+            archiveRepository.copyCurrentStateInArchive();
+            lpRepository.deleteAll();
+            roadRepository.deleteAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isRoadRegistered(double id) {
+        return roadRepository.existsRoadByRoadId(id);
+    }
+
+    public boolean isLightPostSaved(double id) {
         return lpRepository.existsByLightPostId(id);
     }
 
-    public boolean isRoadRegistered(Double id) {
-        return currentRoadRepository.existsRegisteredRoadByRoadId(id);
+    private void moveCurrentRoadByIdInArchives(Double roadId) {
+        try {
+            archiveRepository.insertUpdatedRoad(roadId);
+            roadRepository.deleteByRoadId(roadId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 }

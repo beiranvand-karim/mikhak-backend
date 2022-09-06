@@ -1,9 +1,9 @@
 package com.example.transportationbackend.excelReader.batch.processor;
 
 import com.example.transportationbackend.TransportationBackendApplication;
-import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.RegisteredRoad;
 import com.example.transportationbackend.models.enums.LightPostSides;
+import com.example.transportationbackend.models.lightpost.LightPost;
+import com.example.transportationbackend.models.road.RegisteredRoad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,64 +17,64 @@ public class LightPostSetters {
     private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private static final String marker = " LightPost setters";
 
-    static void setId(LightPost lp,String id){
+    static void setId(LightPost lp, String id) {
         try {
             lp.setLightPostId(parseDouble(id));
-        }catch (Throwable t){
-            logger.debug(marker,t.getMessage());
-            logger.debug("lightpost id",t.getMessage());
+        } catch (Throwable t) {
+            logger.debug(marker, t.getMessage());
+            logger.debug("lightpost id", t.getMessage());
             lp.setLightPostId(new Random(500000).nextDouble());
         }
     }
 
-    static void setHeight(LightPost lp,String height){
+    static void setHeight(LightPost lp, String height) {
         try {
             lp.setHeight(parseDouble(height));
-        }catch (Throwable t){
-            logger.debug(marker,t.getMessage());
-            logger.debug("height",t.getMessage());
+        } catch (Throwable t) {
+            logger.debug(marker, t.getMessage());
+            logger.debug("height", t.getMessage());
             lp.setHeight(0.0);
         }
     }
 
-    static void setPower(LightPost lp,String power){
+    static void setPower(LightPost lp, String power) {
         try {
             lp.setPower(parseDouble(power));
-        }catch (Throwable t){
-            logger.debug(marker,t.getMessage());
-            logger.debug("power",t.getMessage());
+        } catch (Throwable t) {
+            logger.debug(marker, t.getMessage());
+            logger.debug("power", t.getMessage());
             lp.setPower(0.0);
         }
     }
 
-    static void setLightProductionType(LightPost lp,String productionType ){
+    static void setLightProductionType(LightPost lp, String productionType) {
         try {
             lp.setLightProductionType(productionType);
-        }catch (Throwable t){
-            logger.debug(marker,t.getMessage());
-            logger.debug("light production type",t.getMessage());
+        } catch (Throwable t) {
+            logger.debug(marker, t.getMessage());
+            logger.debug("light production type", t.getMessage());
             lp.setLightProductionType("");
         }
     }
 
-    static void setRoad(LightPost lp, RegisteredRoad path){
+    static void setRoad(LightPost lp, RegisteredRoad path) {
         try {
             lp.setRegisteredRoad(path);
-        }catch (Throwable t){
-            logger.debug(marker,t.getMessage());
-            logger.debug("path",t.getMessage());
+        } catch (Throwable t) {
+            logger.debug(marker, t.getMessage());
+            logger.debug("path", t.getMessage());
         }
     }
 
-    static void setSides(LightPost lp,String sides){
+    static void setSides(LightPost lp, String sides) {
         try {
             if (equalStrings(lightPostSidesString, sides))
                 lp.setSides(LightPostSides.TWO_SIDES);
             else
                 lp.setSides(LightPostSides.ONE_SIDE);
-        }catch (Throwable t){
-            logger.debug(marker,t.getMessage());
-            logger.debug("sides",t.getMessage());
+        } catch (Throwable t) {
+            logger.debug(marker, t.getMessage());
+            logger.debug("sides", t.getMessage());
         }
     }
 
@@ -82,13 +82,9 @@ public class LightPostSetters {
         String srcTrim = src.trim();
         String destinationTrim = destination.trim();
 
-        if (src.equals(destination)
+        return src.equals(destination)
                 || srcTrim.equals(destinationTrim)
                 || src.contains(destinationTrim)
-                || src.endsWith(destinationTrim)) {
-            return true;
-        }
-        return false;
+                || src.endsWith(destinationTrim);
     }
-
 }
