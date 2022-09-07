@@ -13,26 +13,12 @@ public class DataItemWriter implements ItemWriter<RegisteredRoad> {
 
     @Autowired
     private DataService service;
-    private RegisteredRoad savedRoadVersion;
 
     @Override
     public void write(List<? extends RegisteredRoad> roads) throws Exception {
         for (RegisteredRoad road : roads) {
-            List<LightPost> lpList = road.getLightPosts();
-            if (road.getClass() != EmptyRoad.class) {
-                if (service.isRoadRegistered(road.getRoadId()))
-                    savedRoadVersion = service.findRoadById(road.getRoadId());
-                else {
-                    savedRoadVersion = road;
-                    service.saveRoad(road);
-                }
-                if (!lpList.isEmpty()) {
-                    LightPost lp = lpList.get(0);
-                    if (service.isLightPostSaved(lp.getLightPostId()))
-                        service.moveCurrentRoadByIdInArchives(road.getRoadId(), lp.getLightPostId());
-                    service.saveLightPost(lp, savedRoadVersion);
-                }
-            }
+            if (road.getClass() != EmptyRoad.class)
+                service.registerRoad(road);
         }
     }
 }
