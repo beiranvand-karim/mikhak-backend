@@ -11,17 +11,19 @@ import org.springframework.batch.item.excel.support.rowset.RowSet;
 public class DataExcelRowMapper implements RowMapper<ExcelRowModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
+    private static int emptyRowsCounts = 0;
     private final String marker = "Data Excel Row Mapper";
 
     @Override
     public ExcelRowModel mapRow(RowSet rowSet) throws Exception {
         if (rowSet.getCurrentRow() == null) {
-            if (rowSet.next())
+            emptyRowsCounts++;
+            if (rowSet.next() && emptyRowsCounts <= 3)
                 return new EmptyRowModel();
             else
                 return null;
         }
-
+        emptyRowsCounts = 0;
         RowMappers rowMappers = new RowMappers();
 
         try {

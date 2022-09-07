@@ -6,6 +6,7 @@ import com.example.transportationbackend.models.lightpost.LightPost;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -17,10 +18,11 @@ import java.util.List;
 @Setter
 @Getter
 @Table(name = "road_tb")
-public class RegisteredRoad {
+public class RegisteredRoad implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true,insertable = false,updatable = false)
     private Long columnId;
 
     @Column(name = "road_id")

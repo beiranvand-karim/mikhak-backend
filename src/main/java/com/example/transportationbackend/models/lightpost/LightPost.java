@@ -19,6 +19,7 @@ public class LightPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true,insertable = false,updatable = false)
     private Long columnId;
 
     @Column(name = "light_post_id")
@@ -45,7 +46,8 @@ public class LightPost {
     @Column(name = "registeration_date")
     private Date registrationDate;
 
-    @JoinColumn(name = "FK_road")
+    @JoinColumn(referencedColumnName = "road_id",
+            name = "FK_road")
     @JsonIncludeProperties(value = "roadId")
     @ManyToOne
     private RegisteredRoad registeredRoad;

@@ -35,7 +35,6 @@ public class Controller {
     @Autowired
     private LightPostRepository lpRepository;
 
-
     @Autowired
     private JobLauncher jobLauncher;
 

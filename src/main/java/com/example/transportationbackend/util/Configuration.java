@@ -1,7 +1,11 @@
 package com.example.transportationbackend.util;
 
+import com.example.transportationbackend.repositories.ArchiveRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -16,8 +20,8 @@ public class Configuration {
         this.env = env;
     }
 
-    @Bean
-    public JdbcTemplate jdbcTemplate() {
+    @Bean(value = "jdbc")
+    public JdbcTemplate createJdbcTemplate() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));

@@ -1,6 +1,7 @@
 package com.example.transportationbackend.repositories;
 
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,20 +17,14 @@ public class ArchiveRepository {
 
     @Transactional
     public void createTableIfNotExists() {
-        jdbc.execute(CREATE_TABLE + "archive_road(LIKE road_tb INCLUDING ALL)");
         jdbc.execute(CREATE_TABLE + "archive_lightpost(LIKE lightpost_tb INCLUDING ALL)");
     }
 
     @Transactional
-    public void copyCurrentStateInArchive() {
-        jdbc.execute("insert into archive_road select * from road_tb");
-        jdbc.execute("insert into archive_lightpost select * from lightpost_tb");
-    }
-
-    @Transactional
-    public void insertUpdatedRoad(double id) {
-        jdbc.update("insert into archive_road select * from user_tb where road_id=?", id);
-        jdbc.update("insert into archive_lightpost select * from email_tb where road_id=?", id);
+    public void insertExpiredState(double roadId, double lpId) throws DataAccessException {
+        jdbc.update("insert into archive_lightpost select * from lightpost_tb where fk_road=? and light_post_id=?",
+                (long) roadId,
+                (long) lpId);
     }
 
 }

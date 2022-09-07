@@ -22,17 +22,18 @@ public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoa
 
     private final static Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private final String marker = "Data Processor";
-    List<LightPost> lpList = new ArrayList<>();
+    private static int emptyRoadsCount = 0;
 
     @Override
     public RegisteredRoad process(ExcelRowModel rowModel) throws Exception {
-        if (rowModel == null) {
-            lpList = new ArrayList<>();
+        if (rowModel == null || emptyRoadsCount >= 4) {
             return null;
         } else if (rowModel.getClass() == EmptyRowModel.class) {
-            lpList = new ArrayList<>();
+            emptyRoadsCount++;
             return new EmptyRoad();
         }
+        emptyRoadsCount = 0;
+        List<LightPost> lpList = new ArrayList<>();
         CablePass cablePass = CablePass.TOP;
         CustomPoint firstP = new CustomPoint(0, 0),
                 secondP = new CustomPoint(0, 0);

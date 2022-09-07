@@ -106,9 +106,7 @@ public class BatchConfig {
                     errorMessage.append("\n");
                     logger.error("{}", errorMessage);
                     return true;
-                } else {
-                    return false;
-                }
+                } else return false;
             }
         };
     }
