@@ -20,6 +20,7 @@ public class ManualRepository {
 
     @Transactional
     public void createTableIfNotExists() {
+        jdbc.execute("drop table if exists archive_lightpost;");
         jdbc.execute(CREATE_TABLE + "archive_lightpost(LIKE lightpost_tb INCLUDING ALL)");
     }
 

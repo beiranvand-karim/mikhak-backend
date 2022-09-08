@@ -18,6 +18,11 @@ public class RowMappers {
     private final String[] powerTitle = {"توان", "چراغ"};
     private final String[] heightTitle = {"ارتفاع", "چراغ"};
     private final String[] lightProductionTypeTitle = {"تولید", "نور"};
+    private final String[] statusTitle = {"چراغ", "وضعیت"};
+    private final String[] causeOfFailureTitle = {"خاموشی", "علت"};
+    private final String[] contractingCompanyTitle = {"شرکت", "پیمانکار"};
+    private final String[] costsTitle = {"هزینه"};
+
     private final ExcelRowModel rowModel;
 
     RowMappers() {
@@ -53,6 +58,14 @@ public class RowMappers {
                 rowModel.setHeight(value);
             } else if (isTitleCorrect(title, lightProductionTypeTitle)) {
                 rowModel.setLightProductionType(value);
+            }else if (isTitleCorrect(title, costsTitle)) {
+                rowModel.setCosts(value);
+            }else if (isTitleCorrect(title, contractingCompanyTitle)) {
+                rowModel.setContractingCompany(value);
+            }else if (isTitleCorrect(title, causeOfFailureTitle)) {
+                rowModel.setCauseOfFailure(value);
+            }else if (isTitleCorrect(title, statusTitle)) {
+                rowModel.setStatus(value);
             }
         }
         return rowModel;
@@ -74,6 +87,10 @@ public class RowMappers {
         rowModel.setPower(rowSet.getColumnValue(8));
         rowModel.setHeight(rowSet.getColumnValue(9));
         rowModel.setLightProductionType(rowSet.getColumnValue(10));
+        rowModel.setStatus(rowSet.getColumnValue(11));
+        rowModel.setCauseOfFailure(rowSet.getColumnValue(12));
+        rowModel.setContractingCompany(rowSet.getColumnValue(13));
+        rowModel.setCosts(rowSet.getColumnValue(14));
         return rowModel;
     }
 

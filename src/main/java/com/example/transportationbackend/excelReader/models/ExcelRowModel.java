@@ -1,5 +1,9 @@
 package com.example.transportationbackend.excelReader.models;
 
+import com.example.transportationbackend.models.enums.LightPostSides;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +23,8 @@ public class ExcelRowModel {
     private String width;
     private String distanceEachLightPost;
     private String cablePass;
+    private String status;
+    private String causeOfFailure;
+    private String contractingCompany;
+    private String costs;
 }

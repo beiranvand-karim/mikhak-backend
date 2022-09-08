@@ -4,6 +4,7 @@ import com.example.transportationbackend.TransportationBackendApplication;
 import com.example.transportationbackend.models.CustomPoint;
 import com.example.transportationbackend.models.enums.CablePass;
 import com.example.transportationbackend.models.enums.LightPostSides;
+import com.example.transportationbackend.models.enums.LightPostStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,10 +14,12 @@ import static java.lang.Double.parseDouble;
 
 public class DataProcessorHelper {
 
-    private static final String BottomCablePassString = "bottom";
     private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private static final String marker = "Data Setter";
     private static final String ONE_SIDES_STRING = "یک طرفه";
+    private static final String on = "on",
+            Off = "Off",
+            Maintenance = "Maintenance";
     private static LightPostSides defaultSide = LightPostSides.TWO_SIDES;
     private static double lat = 0.0;
     private static double lng = 0.0;
@@ -79,4 +82,16 @@ public class DataProcessorHelper {
         return value;
     }
 
+    public static LightPostStatus extractLPStatus(String str) {
+        LightPostStatus lpStatus = LightPostStatus.On;
+        try {
+            if (str.equalsIgnoreCase(Off))
+                lpStatus = LightPostStatus.Off;
+            else if (str.equalsIgnoreCase(Maintenance))
+                lpStatus = LightPostStatus.Maintenance;
+        } catch (Throwable t) {
+            logger.debug("parse to double", t);
+        }
+        return lpStatus;
+    }
 }

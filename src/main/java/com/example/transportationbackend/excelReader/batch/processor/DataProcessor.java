@@ -6,6 +6,7 @@ import com.example.transportationbackend.excelReader.models.ExcelRowModel;
 import com.example.transportationbackend.models.CustomPoint;
 import com.example.transportationbackend.models.enums.CablePass;
 import com.example.transportationbackend.models.enums.LightPostSides;
+import com.example.transportationbackend.models.enums.LightPostStatus;
 import com.example.transportationbackend.models.lightpost.LightPost;
 import com.example.transportationbackend.models.road.EmptyRoad;
 import com.example.transportationbackend.models.road.RegisteredRoad;
@@ -21,8 +22,8 @@ import java.util.List;
 public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoad> {
 
     private final static Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
-    private final String marker = "Data Processor";
     private static int emptyRoadsCount = 0;
+    private final String marker = "Data Processor";
 
     @Override
     public RegisteredRoad process(ExcelRowModel rowModel) throws Exception {
@@ -44,6 +45,9 @@ public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoa
         double lpId = 0,
                 lpHeight = 0,
                 lpPower = 0;
+        long costs = 0;
+        LightPostStatus status = LightPostStatus.On;
+
         try {
             roadId = DataProcessorHelper.parseIdToDouble(rowModel.getRoadId());
             roadWidth = DataProcessorHelper.parseToDouble(rowModel.getWidth());
@@ -55,6 +59,8 @@ public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoa
             lpHeight = DataProcessorHelper.parseToDouble(rowModel.getHeight());
             lpPower = DataProcessorHelper.parseToDouble(rowModel.getPower());
             lpSides = DataProcessorHelper.extractLightPostSides(rowModel.getSides());
+            costs = (long)DataProcessorHelper.parseToDouble(rowModel.getCosts());
+            status = DataProcessorHelper.extractLPStatus(rowModel.getStatus());
         } catch (Exception e) {
             logger.debug(marker, e);
         }
@@ -77,6 +83,10 @@ public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoa
                 .lightPostId(lpId)
                 .lightProductionType(rowModel.getLightProductionType())
                 .sides(lpSides)
+                .status(status)
+                .causeOfFailure(rowModel.getCauseOfFailure())
+                .contractingCompany(rowModel.getContractingCompany())
+                .costs(costs)
                 .build();
         lpEntity.setRegisteredRoad(registeredRoad);
         lpList.add(lpEntity);
