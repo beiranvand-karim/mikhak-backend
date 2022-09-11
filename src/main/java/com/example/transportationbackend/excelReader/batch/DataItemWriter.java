@@ -1,49 +1,24 @@
 package com.example.transportationbackend.excelReader.batch;
 
-import com.example.transportationbackend.models.LightPost;
-import com.example.transportationbackend.models.PathEntity;
-import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.PathRepository;
+import com.example.transportationbackend.models.lightpost.LightPost;
+import com.example.transportationbackend.models.road.EmptyRoad;
+import com.example.transportationbackend.models.road.RegisteredRoad;
+import com.example.transportationbackend.services.DataService;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class DataItemWriter implements ItemWriter<LightPost> {
+public class DataItemWriter implements ItemWriter<RegisteredRoad> {
 
     @Autowired
-    private PathRepository pathRepository;
-
-    @Autowired
-    private LightPostRepository lpRepository;
-
-    private PathEntity savedPath;
+    private DataService service;
 
     @Override
-    public void write(List<? extends LightPost> lpLists) throws Exception {
-        for (LightPost lp : lpLists) {
-
-            if (!isLightPostExists(lp.getLightPostId())) {
-
-                Double pathId = lp.getPath().getPathId();
-                if (isPathExists(pathId)) {
-                    savedPath = pathRepository.findByPathId(pathId);
-                } else {
-                    savedPath = lp.getPath();
-                    pathRepository.save(savedPath);
-                }
-                lp.setPath(savedPath);
-                lpRepository.save(lp);
-            }
+    public void write(List<? extends RegisteredRoad> roads) throws Exception {
+        for (RegisteredRoad road : roads) {
+            if (road.getClass() != EmptyRoad.class)
+                service.registerRoad(road);
         }
-    }
-
-
-    public boolean isLightPostExists(Double id) {
-        return lpRepository.existsByLightPostId(id);
-    }
-
-    public boolean isPathExists(Double id) {
-        return pathRepository.existsByPathId(id);
     }
 }

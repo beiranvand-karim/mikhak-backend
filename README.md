@@ -1,5 +1,5 @@
 ## Mikhak-backend project
-This project is intended to manage information about transportation and pathEntity maintenance in database.
+This project is intended to manage information about transportation and registeredRoad maintenance in database.
 It receives data in csv format then process it and save them to database.
 
 ## Run the Application

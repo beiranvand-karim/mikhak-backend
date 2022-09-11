@@ -3,8 +3,8 @@ package com.example.transportationbackend.excelReader.batch;
 import com.example.transportationbackend.excelReader.batch.listener.JobCompletionNotificationListener;
 import com.example.transportationbackend.excelReader.batch.listener.StepCompletionListener;
 import com.example.transportationbackend.excelReader.batch.processor.DataProcessor;
-import com.example.transportationbackend.excelReader.models.LightPostInput;
-import com.example.transportationbackend.models.LightPost;
+import com.example.transportationbackend.excelReader.models.ExcelRowModel;
+import com.example.transportationbackend.models.road.RegisteredRoad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -49,7 +49,7 @@ public class BatchConfig {
 
     @Bean
     public Step step1() {
-        return stepBuilderFactory.get("step1").<LightPostInput, LightPost>chunk(10)
+        return stepBuilderFactory.get("step1").<ExcelRowModel, RegisteredRoad>chunk(10)
                 .listener(new StepCompletionListener())
                 .reader(reader(null))
                 .faultTolerant().skipPolicy(createSkipPolicy())
@@ -67,12 +67,12 @@ public class BatchConfig {
     }
 
     @Bean
-    public ItemProcessor<LightPostInput, LightPost> processor() {
+    public ItemProcessor<ExcelRowModel, RegisteredRoad> processor() {
         return new DataProcessor();
     }
 
     @Bean
-    ItemWriter<LightPost> writer() {
+    ItemWriter<RegisteredRoad> writer() {
         return new DataItemWriter();
     }
 
@@ -106,9 +106,7 @@ public class BatchConfig {
                     errorMessage.append("\n");
                     logger.error("{}", errorMessage);
                     return true;
-                } else {
-                    return false;
-                }
+                } else return false;
             }
         };
     }

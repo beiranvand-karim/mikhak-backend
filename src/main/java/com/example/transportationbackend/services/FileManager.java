@@ -16,11 +16,10 @@ import java.util.Objects;
 @Component
 public class FileManager {
 
-    private File dataFile;
-    private File uploadDirectory;
-
     private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private final String marker = "File Manager";
+    private File dataFile;
+    private File uploadDirectory;
 
     public FileManager() {
         handleUploadDirectory();
@@ -32,7 +31,7 @@ public class FileManager {
         try {
             rootDir = new File(this.getClass().getResource("/").toURI());
         } catch (URISyntaxException e) {
-            logger.error(marker,e.getMessage());
+            logger.error(marker, e.getMessage());
         }
         this.uploadDirectory = new File(rootDir.getAbsolutePath() + "/uploads");
 
@@ -42,10 +41,7 @@ public class FileManager {
     }
 
     public boolean isExcelFile(MultipartFile file) {
-        if (Objects.requireNonNull(file.getOriginalFilename()).endsWith(".xlsx")) {
-            return true;
-        }
-        return false;
+        return Objects.requireNonNull(file.getOriginalFilename()).endsWith(".xlsx");
     }
 
     public Path saveFile(MultipartFile file) throws IOException {

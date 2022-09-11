@@ -35,3 +35,4 @@ build/
 ### app
 .mvn/
 src/main/resources/application.properties
+file:/
