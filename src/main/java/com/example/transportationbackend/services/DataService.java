@@ -5,8 +5,10 @@ import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
 import com.example.transportationbackend.repositories.ManualRepository;
 import com.example.transportationbackend.repositories.RoadRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,6 +50,13 @@ public class DataService {
         return lpRepository.existsByLightPostId(id);
     }
 
+    public void submitLightPost(LightPost lp, double roadId) {
+        RegisteredRoad savedRoad = roadRepository.findRoadsByRoadId(roadId);
+        List<LightPost> lpList = new ArrayList<>();
+        lpList.add(lp);
+        saveLightPosts(savedRoad, lpList);
+    }
+
     private void saveLightPosts(RegisteredRoad road, List<LightPost> lpList) {
         if (!lpList.isEmpty()) {
             for (LightPost lp : lpList) {
@@ -59,12 +68,21 @@ public class DataService {
         }
     }
 
+    @Transactional
     private void moveCurrentRoadByIdInArchives(double roadId, double lpId) {
         try {
             manualRepository.insertLPOldVersion(roadId, lpId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             lpRepository.deleteByLightPostId(lpId);
         } catch (Exception e) {
             e.printStackTrace();
+            LightPost lp = lpRepository.getLightPostByLightPostId(lpId);
+            List<Long> ids = new ArrayList<Long>();
+            ids.add(lp.getColumnId());
+            lpRepository.deleteAllByIdInBatch(ids);
         }
     }
 
@@ -79,4 +97,5 @@ public class DataService {
     public List<LightPost> getAllLightPosts() {
         return lpRepository.findAll();
     }
+
 }

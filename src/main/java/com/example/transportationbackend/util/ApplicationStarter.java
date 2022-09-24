@@ -14,6 +14,10 @@ public class ApplicationStarter implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // TODO: 22.09.22 use flyway db instead that first step
+        // TODO: 22.09.22 spring security : insert users data with flyway db
+        // TODO: 22.09.22 spring security : authentication across the board
+        // TODO: 22.09.22 spring security : migrate to https 
         manualRepository.createTableIfNotExists();
     }
 }

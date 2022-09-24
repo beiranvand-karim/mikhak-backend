@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TransportationBackendApplication {
     public static void main(String[] args) {
-        // TODO: 05.09.22 create archives tables
         SpringApplication.run(TransportationBackendApplication.class, args);
     }
 }

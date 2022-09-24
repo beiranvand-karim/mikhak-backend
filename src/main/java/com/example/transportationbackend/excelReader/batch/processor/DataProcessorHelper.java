@@ -20,7 +20,7 @@ public class DataProcessorHelper {
     private static final String on = "on",
             Off = "Off",
             Maintenance = "Maintenance";
-    private static LightPostSides defaultSide = LightPostSides.TWO_SIDES;
+    private static LightPostSides defaultSide = LightPostSides.Two;
     private static double lat = 0.0;
     private static double lng = 0.0;
     private static double value = 0.0;
@@ -50,7 +50,7 @@ public class DataProcessorHelper {
     static LightPostSides extractLightPostSides(String sides) {
         try {
             if (equalStrings(ONE_SIDES_STRING, sides))
-                defaultSide = LightPostSides.ONE_SIDE;
+                defaultSide = LightPostSides.One;
         } catch (Throwable t) {
             logger.debug("light post sides", t);
         }
@@ -59,9 +59,9 @@ public class DataProcessorHelper {
 
     static CablePass extractRoadCablePass(String src) {
         if (equalStrings(src, "bottom"))
-            return CablePass.BOTTOM;
+            return CablePass.Bottom;
         else
-            return CablePass.TOP;
+            return CablePass.Top;
     }
 
     private static boolean equalStrings(String src, String destination) {

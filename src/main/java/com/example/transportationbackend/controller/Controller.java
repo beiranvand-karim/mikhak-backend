@@ -28,9 +28,7 @@ public class Controller {
     private final String marker = "Controller";
     private final DataService service;
     private final JobLauncher jobLauncher;
-
     private final Job job;
-
     private final FileManager fileManager;
 
     public Controller(DataService service, JobLauncher jobLauncher, Job job, FileManager fileManager) {
@@ -55,10 +53,26 @@ public class Controller {
         return service.getLightPostsByRoadId(roadId);
     }
 
-    @PostMapping("/submit_light_state")
-    public void submitRoad(@RequestBody RegisteredRoad road) {
-        service.registerRoad(road);
+    @PostMapping(value = "/register_road")
+    public void registerRoad(@RequestBody RegisteredRoad road) {
+        RegisteredRoad roadToSave = road.clone();
+        List<LightPost> lpLists = road.getLightPosts()
+                .stream()
+                .map(lp -> {
+                    lp.setRegisteredRoad(roadToSave);
+                    return lp.clone();
+                })
+                .toList();
+        roadToSave.setLightPosts(lpLists);
+        service.registerRoad(roadToSave);
     }
+
+    @PostMapping(value = "/submit_light_post")
+    public void submitLightPost(@RequestBody LightPost lp) {
+        LightPost lpToSave = lp.clone();
+        service.submitLightPost(lpToSave,
+                lp.getRegisteredRoad().getRoadId());
+     }
 
     @PostMapping(value = "/upload_file")
     public void uploadFile(@RequestParam("file") MultipartFile file) throws IOException {

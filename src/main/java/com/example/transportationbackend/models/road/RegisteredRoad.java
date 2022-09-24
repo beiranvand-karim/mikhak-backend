@@ -5,8 +5,11 @@ import com.example.transportationbackend.models.enums.CablePass;
 import com.example.transportationbackend.models.lightpost.LightPost;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class RegisteredRoad implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true,insertable = false,updatable = false)
+    @Column(unique = true,insertable = false)
     private Long columnId;
 
     @Column(name = "road_id")
@@ -41,9 +44,8 @@ public class RegisteredRoad implements Serializable {
     @Enumerated(EnumType.STRING)
     private CablePass cablePass;
 
-    @Temporal(TemporalType.TIME)
     @Column(name = "registration_time")
-    private Date registrationTime;
+    private Time registrationTime;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "registration_date")
@@ -54,7 +56,18 @@ public class RegisteredRoad implements Serializable {
 
     @PrePersist
     public void setDateTime() {
-        registrationTime = new Date();
+        registrationTime = Time.valueOf(LocalTime.now());
         registrationDate = new Date();
+    }
+
+    public RegisteredRoad clone(){
+        return RegisteredRoad
+                .builder()
+                .roadId(roadId)
+                .width(width)
+                .distanceEachLightPost(distanceEachLightPost)
+                .points(points)
+                .cablePass(cablePass)
+                .build();
     }
 }

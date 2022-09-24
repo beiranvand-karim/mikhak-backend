@@ -1,6 +1,9 @@
 package com.example.transportationbackend.excelReader.batch.rowMapper;
 
 import com.example.transportationbackend.TransportationBackendApplication;
+import com.example.transportationbackend.excelReader.batch.rowMapper.strategy.DefaultRowMapper;
+import com.example.transportationbackend.excelReader.batch.rowMapper.strategy.RowMapperByTitles;
+import com.example.transportationbackend.excelReader.batch.rowMapper.strategy.RowMapperStrategy;
 import com.example.transportationbackend.excelReader.models.EmptyRowModel;
 import com.example.transportationbackend.excelReader.models.ExcelRowModel;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ public class DataExcelRowMapper implements RowMapper<ExcelRowModel> {
     private static final Logger logger = LoggerFactory.getLogger(TransportationBackendApplication.class);
     private static int emptyRowsCounts = 0;
     private final String marker = "Data Excel Row Mapper";
+    private RowMapperStrategy rowMapper;
 
     @Override
     public ExcelRowModel mapRow(RowSet rowSet) throws Exception {
@@ -24,14 +28,15 @@ public class DataExcelRowMapper implements RowMapper<ExcelRowModel> {
                 return null;
         }
         emptyRowsCounts = 0;
-        RowMappers rowMappers = new RowMappers();
+        rowMapper = new RowMapperByTitles();
 
         try {
-            return rowMappers.RowMapperByTitles(rowSet);
+            return rowMapper.rowMapper(rowSet);
         } catch (Exception e) {
             logger.error(marker, e.getMessage());
             logger.info("Use the default row mapper");
-            return rowMappers.defaultRowMapper(rowSet);
+            rowMapper = new DefaultRowMapper();
+            return rowMapper.rowMapper(rowSet);
         }
     }
 

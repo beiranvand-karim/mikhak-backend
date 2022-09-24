@@ -1,11 +1,11 @@
-package com.example.transportationbackend.excelReader.batch.rowMapper;
+package com.example.transportationbackend.excelReader.batch.rowMapper.strategy;
 
 import com.example.transportationbackend.excelReader.models.ExcelRowModel;
 import org.springframework.batch.item.excel.support.rowset.RowSet;
 
 import java.util.Arrays;
 
-public class RowMappers {
+public class RowMapperByTitles extends RowMapperStrategy {
 
     private final String[] roadIdTitle = {"شناسه", "مسیر"};
     private final String[] firstPointTitle = {"نقطه", "اول"};
@@ -23,18 +23,18 @@ public class RowMappers {
     private final String[] contractingCompanyTitle = {"شرکت", "پیمانکار"};
     private final String[] costsTitle = {"هزینه"};
 
-    private final ExcelRowModel rowModel;
-
-    RowMappers() {
+    public RowMapperByTitles() {
         rowModel = new ExcelRowModel();
     }
 
-    ExcelRowModel RowMapperByTitles(RowSet rowSet) throws Exception {
+    @Override
+    public ExcelRowModel rowMapper(RowSet rs) throws Exception {
 
-        for (int index = 0; index < rowSet.getMetaData().getColumnCount(); index++) {
 
-            String title = rowSet.getMetaData().getColumnName(index);
-            String value = rowSet.getColumnValue(index);
+        for (int index = 0; index < rs.getMetaData().getColumnCount(); index++) {
+
+            String title = rs.getMetaData().getColumnName(index);
+            String value = rs.getColumnValue(index);
 
             if (isTitleCorrect(title, roadIdTitle)) {
                 rowModel.setRoadId(value);
@@ -58,13 +58,13 @@ public class RowMappers {
                 rowModel.setHeight(value);
             } else if (isTitleCorrect(title, lightProductionTypeTitle)) {
                 rowModel.setLightProductionType(value);
-            }else if (isTitleCorrect(title, costsTitle)) {
+            } else if (isTitleCorrect(title, costsTitle)) {
                 rowModel.setCosts(value);
-            }else if (isTitleCorrect(title, contractingCompanyTitle)) {
+            } else if (isTitleCorrect(title, contractingCompanyTitle)) {
                 rowModel.setContractingCompany(value);
-            }else if (isTitleCorrect(title, causeOfFailureTitle)) {
+            } else if (isTitleCorrect(title, causeOfFailureTitle)) {
                 rowModel.setCauseOfFailure(value);
-            }else if (isTitleCorrect(title, statusTitle)) {
+            } else if (isTitleCorrect(title, statusTitle)) {
                 rowModel.setStatus(value);
             }
         }
@@ -74,24 +74,4 @@ public class RowMappers {
     private boolean isTitleCorrect(String columnTitle, String[] correctTitle) {
         return Arrays.stream(correctTitle).allMatch(columnTitle::contains);
     }
-
-    public ExcelRowModel defaultRowMapper(RowSet rowSet) throws Exception {
-        rowModel.setRoadId(rowSet.getColumnValue(0));
-        rowModel.setFirstPoint(rowSet.getColumnValue(1));
-        rowModel.setSecondPoint(rowSet.getColumnValue(2));
-        rowModel.setWidth(rowSet.getColumnValue(3));
-        rowModel.setCablePass(rowSet.getColumnValue(4));
-        rowModel.setDistanceEachLightPost(rowSet.getColumnValue(5));
-        rowModel.setLightPostId(rowSet.getColumnValue(6));
-        rowModel.setSides(rowSet.getColumnValue(7));
-        rowModel.setPower(rowSet.getColumnValue(8));
-        rowModel.setHeight(rowSet.getColumnValue(9));
-        rowModel.setLightProductionType(rowSet.getColumnValue(10));
-        rowModel.setStatus(rowSet.getColumnValue(11));
-        rowModel.setCauseOfFailure(rowSet.getColumnValue(12));
-        rowModel.setContractingCompany(rowSet.getColumnValue(13));
-        rowModel.setCosts(rowSet.getColumnValue(14));
-        return rowModel;
-    }
-
 }

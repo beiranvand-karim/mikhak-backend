@@ -35,13 +35,13 @@ public class DataProcessor implements ItemProcessor<ExcelRowModel, RegisteredRoa
         }
         emptyRoadsCount = 0;
         List<LightPost> lpList = new ArrayList<>();
-        CablePass cablePass = CablePass.TOP;
+        CablePass cablePass = CablePass.Top;
         CustomPoint firstP = new CustomPoint(0, 0),
                 secondP = new CustomPoint(0, 0);
         double roadId = -1,
                 roadWidth = 0,
                 distanceLps = 0;
-        LightPostSides lpSides = LightPostSides.TWO_SIDES;
+        LightPostSides lpSides = LightPostSides.Two;
         double lpId = 0,
                 lpHeight = 0,
                 lpPower = 0;
