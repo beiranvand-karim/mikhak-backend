@@ -4,7 +4,7 @@ import com.example.transportationbackend.models.enums.LightPostSides;
 import com.example.transportationbackend.models.enums.LightPostStatus;
 import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.sql.Time;
@@ -22,7 +22,8 @@ public class LightPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, insertable = false)
+    @Column(name = "row_id",
+            unique = true, insertable = false)
     private Long columnId;
 
     @Column(name = "light_post_id")

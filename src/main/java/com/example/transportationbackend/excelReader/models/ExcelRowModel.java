@@ -1,9 +1,5 @@
 package com.example.transportationbackend.excelReader.models;
 
-import com.example.transportationbackend.models.enums.LightPostSides;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

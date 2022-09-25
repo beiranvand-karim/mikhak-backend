@@ -5,9 +5,9 @@ import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
 import com.example.transportationbackend.repositories.ManualRepository;
 import com.example.transportationbackend.repositories.RoadRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class DataService {
     }
 
     @Transactional
-    private void moveCurrentRoadByIdInArchives(double roadId, double lpId) {
+    protected void moveCurrentRoadByIdInArchives(double roadId, double lpId) {
         try {
             manualRepository.insertLPOldVersion(roadId, lpId);
         } catch (Exception e) {

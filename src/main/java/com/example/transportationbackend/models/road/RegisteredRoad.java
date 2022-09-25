@@ -3,10 +3,9 @@ package com.example.transportationbackend.models.road;
 import com.example.transportationbackend.models.CustomPoint;
 import com.example.transportationbackend.models.enums.CablePass;
 import com.example.transportationbackend.models.lightpost.LightPost;
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -25,7 +24,8 @@ public class RegisteredRoad implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true,insertable = false)
+    @Column(name = "row_id",
+            unique = true,insertable = false)
     private Long columnId;
 
     @Column(name = "road_id")
