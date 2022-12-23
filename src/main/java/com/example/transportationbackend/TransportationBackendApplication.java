@@ -8,9 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TransportationBackendApplication {
     public static void main(String[] args) {
-        // TODO: 22.09.22 spring security : insert users data with flyway db
-        // TODO: 22.09.22 spring security : authentication across the board
-        // TODO: 22.09.22 spring security : migrate to https
         SpringApplication.run(TransportationBackendApplication.class, args);
     }
 }

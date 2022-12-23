@@ -9,11 +9,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public class ManualRepository {
+public class JdbcRepository {
 
     private final JdbcTemplate jdbc;
 
-    public ManualRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcRepository(JdbcTemplate jdbcTemplate) {
         this.jdbc = jdbcTemplate;
     }
 

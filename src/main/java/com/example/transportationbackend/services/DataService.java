@@ -3,7 +3,7 @@ package com.example.transportationbackend.services;
 import com.example.transportationbackend.models.lightpost.LightPost;
 import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.ManualRepository;
+import com.example.transportationbackend.repositories.JdbcRepository;
 import com.example.transportationbackend.repositories.RoadRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +17,14 @@ public class DataService {
 
     private final LightPostRepository lpRepository;
 
-    private final ManualRepository manualRepository;
+    private final JdbcRepository jdbcRepository;
 
     private RegisteredRoad savedRoadVersion;
 
-    public DataService(RoadRepository roadRepository, LightPostRepository lpRepository, ManualRepository manualRepository) {
+    public DataService(RoadRepository roadRepository, LightPostRepository lpRepository, JdbcRepository jdbcRepository) {
         this.roadRepository = roadRepository;
         this.lpRepository = lpRepository;
-        this.manualRepository = manualRepository;
+        this.jdbcRepository = jdbcRepository;
     }
 
     public void registerRoad(RegisteredRoad road) {
@@ -71,7 +71,7 @@ public class DataService {
     @Transactional
     protected void moveCurrentRoadByIdInArchives(double roadId, double lpId) {
         try {
-            manualRepository.insertLPOldVersion(roadId, lpId);
+            jdbcRepository.insertLPOldVersion(roadId, lpId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,7 +91,7 @@ public class DataService {
     }
 
     public List<LightPost> getLightPostsByRoadId(double id) {
-        return manualRepository.getAllLightPostsByRoadId(id);
+        return jdbcRepository.getAllLightPostsByRoadId(id);
     }
 
     public List<LightPost> getAllLightPosts() {
