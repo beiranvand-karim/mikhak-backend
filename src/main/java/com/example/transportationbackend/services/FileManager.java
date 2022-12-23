@@ -20,21 +20,22 @@ public class FileManager {
     private final String marker = "File Manager";
     private File dataFile;
     private File uploadDirectory;
+    private File rootDir = null;
 
     public FileManager() {
-        handleUploadDirectory();
+        setUpRootDir();
     }
 
-
-    public void handleUploadDirectory() {
-        File rootDir = null;
+    private void setUpRootDir() {
         try {
             rootDir = new File(this.getClass().getResource("/").toURI());
         } catch (URISyntaxException e) {
             logger.error(marker, e.getMessage());
         }
-        this.uploadDirectory = new File(rootDir.getAbsolutePath() + "/uploads");
+    }
 
+    public void handleUploadDirectory() {
+        this.uploadDirectory = new File(rootDir.getAbsolutePath() + "/uploads");
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
         }
@@ -51,10 +52,16 @@ public class FileManager {
     }
 
     public void deleteAll() {
-        try {
-            Files.deleteIfExists(this.dataFile.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    Files.deleteIfExists(dataFile.toPath());
+                } catch (Exception e) {
+                    logger.error(marker, "delete temporary file error");
+                }
+            }
+        };
     }
 }

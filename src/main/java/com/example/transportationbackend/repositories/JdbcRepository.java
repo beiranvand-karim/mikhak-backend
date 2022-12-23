@@ -1,27 +1,20 @@
 package com.example.transportationbackend.repositories;
 
 import com.example.transportationbackend.models.lightpost.LightPost;
-import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public class ManualRepository {
+public class JdbcRepository {
 
-    private static final String CREATE_TABLE = "create table if not exists ";
     private final JdbcTemplate jdbc;
 
-    public ManualRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcRepository(JdbcTemplate jdbcTemplate) {
         this.jdbc = jdbcTemplate;
-    }
-
-    @Transactional
-    public void createTableIfNotExists() {
-        jdbc.execute("drop table if exists archive_lightpost;");
-        jdbc.execute(CREATE_TABLE + "archive_lightpost(LIKE lightpost_tb INCLUDING ALL)");
     }
 
     @Transactional

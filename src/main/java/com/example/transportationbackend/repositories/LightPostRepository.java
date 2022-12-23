@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface LightPostRepository extends JpaRepository<LightPost, Long> {
     boolean existsByLightPostId(double id);
+    LightPost getLightPostByLightPostId(double id);
     void deleteByLightPostId(double id);
 }

@@ -83,11 +83,11 @@ public class BatchConfig {
 
         return new SkipPolicy() {
             @Override
-            public boolean shouldSkip(Throwable exception, long skipCount) throws SkipLimitExceededException {
-                if (exception instanceof FileNotFoundException) {
+            public boolean shouldSkip(Throwable throwable, int i) throws SkipLimitExceededException {
+                if (throwable instanceof FileNotFoundException) {
                     return false;
-                } else if (exception instanceof FlatFileParseException && skipCount <= 5) {
-                    FlatFileParseException ffpe = (FlatFileParseException) exception;
+                } else if (throwable instanceof FlatFileParseException && i <= 5) {
+                    FlatFileParseException ffpe = (FlatFileParseException) throwable;
 
                     StringBuilder errorMessage = new StringBuilder();
                     errorMessage.append("An error occured while processing the ");

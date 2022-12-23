@@ -3,10 +3,12 @@ package com.example.transportationbackend.services;
 import com.example.transportationbackend.models.lightpost.LightPost;
 import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.example.transportationbackend.repositories.LightPostRepository;
-import com.example.transportationbackend.repositories.ManualRepository;
+import com.example.transportationbackend.repositories.JdbcRepository;
 import com.example.transportationbackend.repositories.RoadRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,14 +17,14 @@ public class DataService {
 
     private final LightPostRepository lpRepository;
 
-    private final ManualRepository manualRepository;
+    private final JdbcRepository jdbcRepository;
 
     private RegisteredRoad savedRoadVersion;
 
-    public DataService(RoadRepository roadRepository, LightPostRepository lpRepository, ManualRepository manualRepository) {
+    public DataService(RoadRepository roadRepository, LightPostRepository lpRepository, JdbcRepository jdbcRepository) {
         this.roadRepository = roadRepository;
         this.lpRepository = lpRepository;
-        this.manualRepository = manualRepository;
+        this.jdbcRepository = jdbcRepository;
     }
 
     public void registerRoad(RegisteredRoad road) {
@@ -48,6 +50,13 @@ public class DataService {
         return lpRepository.existsByLightPostId(id);
     }
 
+    public void submitLightPost(LightPost lp, double roadId) {
+        RegisteredRoad savedRoad = roadRepository.findRoadsByRoadId(roadId);
+        List<LightPost> lpList = new ArrayList<>();
+        lpList.add(lp);
+        saveLightPosts(savedRoad, lpList);
+    }
+
     private void saveLightPosts(RegisteredRoad road, List<LightPost> lpList) {
         if (!lpList.isEmpty()) {
             for (LightPost lp : lpList) {
@@ -59,12 +68,21 @@ public class DataService {
         }
     }
 
-    private void moveCurrentRoadByIdInArchives(double roadId, double lpId) {
+    @Transactional
+    protected void moveCurrentRoadByIdInArchives(double roadId, double lpId) {
         try {
-            manualRepository.insertLPOldVersion(roadId, lpId);
+            jdbcRepository.insertLPOldVersion(roadId, lpId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             lpRepository.deleteByLightPostId(lpId);
         } catch (Exception e) {
             e.printStackTrace();
+            LightPost lp = lpRepository.getLightPostByLightPostId(lpId);
+            List<Long> ids = new ArrayList<Long>();
+            ids.add(lp.getColumnId());
+            lpRepository.deleteAllByIdInBatch(ids);
         }
     }
 
@@ -73,10 +91,11 @@ public class DataService {
     }
 
     public List<LightPost> getLightPostsByRoadId(double id) {
-        return manualRepository.getAllLightPostsByRoadId(id);
+        return jdbcRepository.getAllLightPostsByRoadId(id);
     }
 
     public List<LightPost> getAllLightPosts() {
         return lpRepository.findAll();
     }
+
 }

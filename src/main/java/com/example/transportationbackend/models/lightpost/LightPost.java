@@ -4,9 +4,11 @@ import com.example.transportationbackend.models.enums.LightPostSides;
 import com.example.transportationbackend.models.enums.LightPostStatus;
 import com.example.transportationbackend.models.road.RegisteredRoad;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Builder
@@ -20,7 +22,8 @@ public class LightPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, insertable = false, updatable = false)
+    @Column(name = "row_id",
+            unique = true, insertable = false)
     private Long columnId;
 
     @Column(name = "light_post_id")
@@ -52,9 +55,8 @@ public class LightPost {
     @Column(name = "light_production_type")
     private String lightProductionType;
 
-    @Temporal(TemporalType.TIME)
     @Column(name = "registeration_time")
-    private Date registrationTime;
+    private Time registrationTime;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "registeration_date")
@@ -68,7 +70,23 @@ public class LightPost {
 
     @PrePersist
     public void setDateTime() {
-        registrationTime = new Date();
+        registrationTime = Time.valueOf(LocalTime.now());
         registrationDate = new Date();
+    }
+
+    public LightPost clone() {
+        return LightPost
+                .builder()
+                .power(power)
+                .height(height)
+                .lightPostId(lightPostId)
+                .lightProductionType(lightProductionType)
+                .sides(sides)
+                .status(status)
+                .causeOfFailure(causeOfFailure)
+                .contractingCompany(contractingCompany)
+                .costs(costs)
+                .registeredRoad(registeredRoad)
+                .build();
     }
 }
